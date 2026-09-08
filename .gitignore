@@ -3,7 +3,7 @@ __pycache__/
 *.pyo
 *.pyd
 .env
-rakshapay.db
 .pytest_cache/
 .vscode/
 .idea/
+*.db
