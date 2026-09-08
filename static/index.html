@@ -359,7 +359,31 @@
       font-size: 11px;
       color: #9ca3af;
     }
+    /* Instant frame-0 signup active overrides */
+    html.init-signup #panel-login { display: none !important; }
+    html.init-signup #panel-signup { display: block !important; }
+    html.init-signup #tab-login { background: #f8f6ff !important; color: var(--slate) !important; }
+    html.init-signup #tab-signup { background: var(--purple) !important; color: #ffffff !important; }
   </style>
+  <script>
+    (function() {
+      const p = window.location.pathname.toLowerCase();
+      const h = window.location.hash.toLowerCase();
+      const s = window.location.search.toLowerCase();
+      const isSignup = p.includes('/signup') || h.includes('signup') || s.includes('signup');
+      const isLogout = p.includes('/logout') || s.includes('logout');
+
+      if (isLogout || isSignup) {
+        localStorage.removeItem('rp_token');
+        localStorage.removeItem('rp_user_name');
+        localStorage.removeItem('rp_user_email');
+      }
+
+      if (isSignup) {
+        document.documentElement.classList.add('init-signup');
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -699,40 +723,40 @@ function hideMsg(id) {
   if (el) el.style.display = 'none';
 }
 
-// Auto-redirect handling for active sessions
+// Session auto-redirect — skipped entirely on /signup or /logout
 (function checkExistingSession() {
-  const isSignup = window.location.pathname.includes('/signup') || 
-                   window.location.hash.toLowerCase().includes('signup') || 
-                   window.location.search.toLowerCase().includes('signup');
-  const isLogout = window.location.pathname.includes('/logout') || 
-                   window.location.search.toLowerCase().includes('logout');
+  // Already handled in <head> script — just do the redirect check for normal page loads
+  const p = window.location.pathname.toLowerCase();
+  const h = window.location.hash.toLowerCase();
+  const s = window.location.search.toLowerCase();
+  const isSignup = p.includes('/signup') || h.includes('signup') || s.includes('signup');
+  const isLogout = p.includes('/logout') || s.includes('logout');
 
-  if (isLogout || isSignup) {
-    // Force clear session token so signup / logout works unconditionally without redirecting back to dashboard
-    localStorage.removeItem('rp_token');
-    localStorage.removeItem('rp_user_name');
-    localStorage.removeItem('rp_user_email');
-    return;
-  }
+  // Skip redirect entirely — token already cleared by head script
+  if (isSignup || isLogout) return;
 
   const token = localStorage.getItem('rp_token');
   if (token) {
     fetch('/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(res => {
-        if (res.ok) window.location.href = '/dashboard';
-      })
+      .then(res => { if (res.ok) window.location.href = '/dashboard'; })
       .catch(() => {});
   }
 })();
 
-// Keyboard Enter shortcuts & URL check
+// DOMContentLoaded: apply correct tab + keyboard shortcuts
 document.addEventListener('DOMContentLoaded', () => {
-  const isSignup = window.location.pathname.includes('/signup') || 
-                   window.location.hash.toLowerCase().includes('signup') || 
-                   window.location.search.toLowerCase().includes('signup');
+  const p = window.location.pathname.toLowerCase();
+  const h = window.location.hash.toLowerCase();
+  const s = window.location.search.toLowerCase();
+  const isSignup = p.includes('/signup') || h.includes('signup') || s.includes('signup');
+
+  // Remove CSS class used for frame-0 flash prevention now that DOM is ready
+  document.documentElement.classList.remove('init-signup');
+
   if (isSignup) {
     switchTab('signup');
   }
+
   document.getElementById('login-password')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') doLogin();
   });
