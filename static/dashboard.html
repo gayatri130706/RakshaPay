@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RakshaPay — AI Fraud Interception for UPI Transactions</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ══ Header ══ -->
+<header class="app-header">
+    <div class="brand-section">
+        <div class="brand-logo">🛡️</div>
+        <div>
+            <div class="brand-title">
+                <span class="brand-name">RakshaPay</span>
+                <span class="official-badge">LIVE GATEWAY</span>
+            </div>
+            <div class="brand-subtitle">Real-Time AI Fraud Interception &amp; Mule Ring Intelligence for UPI Transactions</div>
+        </div>
+    </div>
+    <div class="header-metrics">
+        <div class="metric-pill" id="status-pill">
+            <span class="status-pulse" id="status-dot"></span>
+            <span class="metric-label">Status:</span>
+            <span class="metric-value" id="hdr-status">Checking…</span>
+        </div>
+        <div class="metric-pill">
+            <span class="metric-dot blue"></span>
+            <span class="metric-label">Avg Latency:</span>
+            <span class="metric-value" id="hdr-latency">—</span>
+        </div>
+        <div class="metric-pill">
+            <span class="metric-dot navy"></span>
+            <span class="metric-label">Interception Layer:</span>
+            <span class="metric-value">Pre-PIN Client &amp; Middleware</span>
+        </div>
+        <div class="metric-pill" style="gap:8px;padding-right:6px">
+            <span class="metric-dot" style="background:#8458B3"></span>
+            <span class="metric-label">Signed in as:</span>
+            <span class="metric-value" id="header-user-name" style="color:#8458B3;font-weight:700">—</span>
+        </div>
+        <button id="btn-logout" style="padding:7px 14px;background:#8458B3;color:#fff;border:none;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s" onmouseover="this.style.background='#6d3fa0'" onmouseout="this.style.background='#8458B3'">
+            Logout
+        </button>
+    </div>
+</header>
+
+
+<!-- ══ Nav Tabs ══ -->
+<nav class="nav-tabs-container">
+    <button class="nav-tab active" data-tab="tab-simulator">
+        <span class="tab-icon">💳</span>
+        <span class="tab-text">UPI Transaction Simulator</span>
+    </button>
+    <button class="nav-tab" data-tab="tab-graph">
+        <span class="tab-icon">🕸️</span>
+        <span class="tab-text">Fraud Ring Network</span>
+        <span class="tab-chip">GNN</span>
+    </button>
+    <button class="nav-tab" data-tab="tab-threat">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-text">National Threat Registry</span>
+    </button>
+</nav>
+
+<!-- ══ Main Content ══ -->
+<main class="main-content">
+
+<!-- ════════════════════════════════════════════
+     TAB 1: UPI SIMULATOR — Vertical layout
+     Flow: Transaction Form → Live Diagnostics → Threat Scenarios
+═════════════════════════════════════════════ -->
+<section id="tab-simulator" class="tab-panel active">
+    <div class="sim-vertical-layout">
+
+        <!-- ── CARD 1: Transaction Details ── -->
+        <div class="txn-form-card white-card">
+            <div class="txn-card-title">
+                <span>💳 Transaction Details</span>
+                <div class="txn-header-right">
+                    <span class="rakshapay-active-badge">🔒 RakshaPay Active — Pre-PIN Interception &lt;100ms</span>
+                </div>
+            </div>
+            <!-- Sender Strip -->
+            <div class="sender-strip">
+                <div class="sender-avatar">G</div>
+                <div class="sender-info">
+                    <div class="sender-name">Gayatri (You)</div>
+                    <div class="sender-vpa">gayatri@okaxis · Axis Bank ****4091</div>
+                </div>
+                <div class="sender-balance">₹74,500</div>
+            </div>
+            <!-- Payment Form -->
+            <form id="payment-form" class="payment-form" onsubmit="return false;">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="input-recipient">Pay To (UPI ID / VPA)</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="input-recipient" placeholder="e.g. support-sbi@ybl" required autocomplete="off">
+                            <button type="button" id="btn-qr-scan" class="qr-btn" title="Scan QR Code">📷</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-amount">Amount (₹)</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">₹</span>
+                            <input type="number" id="input-amount" placeholder="0.00" min="1" step="any" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-note">Remark / Purpose</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon">💬</span>
+                            <input type="text" id="input-note" placeholder="e.g. Food, Electricity bill">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="select-type">Mode</label>
+                        <select id="select-type" class="custom-select">
+                            <option value="DIRECT_PAY">Direct Pay (Send Money)</option>
+                            <option value="COLLECT_REQUEST">Collect Request (Approval)</option>
+                            <option value="QR_SCAN">Scanned QR Code</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Telemetry Toggles — inline row -->
+                <div class="telemetry-inline-row">
+                    <div class="telemetry-inline-label">📡 Device Signals:</div>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="chk-call-active">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Phone/Video Call Active</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="chk-screen-share">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Screen Sharing (AnyDesk)</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="chk-late-night">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Late Night (2:30 AM)</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="chk-new-device">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">New Device</span>
+                    </label>
+                </div>
+                <button type="submit" id="btn-submit-payment" class="btn-primary-pay">
+                    <span class="btn-text">Proceed to Pay</span>
+                    <span class="btn-arrow">➔</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- ── CARD 2: Live AI Diagnostics ── -->
+        <div class="live-diagnostics white-card" id="diagnostics-card">
+            <div class="panel-header">
+                <h3>🔍 Live Diagnostics</h3>
+                <p class="panel-desc">Multi-model risk evaluation pipeline — results in real time</p>
+            </div>
+            <div id="diagnostics-placeholder" class="diagnostics-placeholder">
+                <div class="empty-icon">📡</div>
+                <p>Select a scenario below or enter a UPI ID and tap <strong>Proceed to Pay</strong> to trigger live evaluation.</p>
+            </div>
+            <div id="diagnostics-content" class="diagnostics-content hidden">
+                <div class="diag-two-col">
+                    <div class="score-meter-card">
+                        <div class="score-ring-container">
+                            <svg class="score-ring-svg" viewBox="0 0 100 100">
+                                <circle class="score-ring-bg" cx="50" cy="50" r="42"></circle>
+                                <circle id="score-ring-bar" class="score-ring-bar" cx="50" cy="50" r="42"></circle>
+                            </svg>
+                            <div class="score-ring-text">
+                                <span id="diag-score" class="score-num">95</span>
+                                <span class="score-label">RISK</span>
+                            </div>
+                        </div>
+                        <div class="score-meta">
+                            <div id="diag-tier-badge" class="tier-badge critical">CRITICAL</div>
+                            <div class="latency-stat">Latency: <strong id="diag-latency">32.8 ms</strong></div>
+                            <div class="action-stat">Action: <strong id="diag-action">INTERCEPT &amp; WARN</strong></div>
+                        </div>
+                    </div>
+                    <div class="token-display-card">
+                        <div class="token-title">Tokenized UPI Display (Anti-Screen Harvesting)</div>
+                        <div class="token-row">
+                            <span class="token-tag">Masked Handle:</span>
+                            <span id="diag-masked-vpa" class="token-value">cbi-***-cell@ybl</span>
+                        </div>
+                        <div class="token-row">
+                            <span class="token-tag">Secure Token:</span>
+                            <span id="diag-token-id" class="token-value mono">TOK-UPI-9F2B81</span>
+                        </div>
+                        <div class="token-badge-wrap" id="diag-badge-container">
+                            <span class="security-badge red">🚨 High-Risk Impersonation Threat</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-engines-list">
+                    <div class="engine-bar-item">
+                        <div class="engine-bar-header"><span>① UPI ID Similarity (VPA Spoof)</span><span id="score-vpa">88%</span></div>
+                        <div class="progress-track"><div id="bar-vpa" class="progress-fill red" style="width:88%"></div></div>
+                    </div>
+                    <div class="engine-bar-item">
+                        <div class="engine-bar-header"><span>② Social Engineering NLP</span><span id="score-social">95%</span></div>
+                        <div class="progress-track"><div id="bar-social" class="progress-fill red" style="width:95%"></div></div>
+                    </div>
+                    <div class="engine-bar-item">
+                        <div class="engine-bar-header"><span>③ Graph Fraud Ring &amp; Zero-Day</span><span id="score-graph">92%</span></div>
+                        <div class="progress-track"><div id="bar-graph" class="progress-fill orange" style="width:92%"></div></div>
+                    </div>
+                    <div class="engine-bar-item">
+                        <div class="engine-bar-header"><span>④ ML Velocity &amp; False-Positive Filter</span><span id="score-ml">64%</span></div>
+                        <div class="progress-track"><div id="bar-ml" class="progress-fill yellow" style="width:64%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── CARD 3: Live Threat Scenarios ── -->
+        <div class="scenarios-section white-card">
+            <div class="scenarios-section-header">
+                <div>
+                    <h3>⚡ Live Threat Scenarios</h3>
+                    <p class="panel-desc">Click any scenario to auto-fill the form above and trigger AI evaluation</p>
+                </div>
+            </div>
+            <div class="scenarios-scroll-row" id="scenarios-list"></div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     TAB 2: FRAUD RING NETWORK (GNN GRAPH)
+     — No changes to animation or layout —
+═════════════════════════════════════════════ -->
+<section id="tab-graph" class="tab-panel">
+    <div class="graph-layout">
+        <div class="graph-canvas-container white-card">
+            <div class="graph-toolbar">
+                <div class="graph-title-group">
+                    <h3>🕸️ Dynamic UPI Transaction Fraud Ring Network</h3>
+                    <p>Live topology: zero-day accounts, fan-out dispersal, and shared-device mule clusters — grows with each analyzed transaction</p>
+                </div>
+                <div class="graph-filters">
+                    <button class="filter-btn active" data-filter="all">All Nodes</button>
+                    <button class="filter-btn" data-filter="fraud">🚨 Fraud Rings</button>
+                    <button class="filter-btn" data-filter="mule">⚡ Mule Accounts</button>
+                    <button class="filter-btn" data-filter="device">📱 Shared Devices</button>
+                </div>
+            </div>
+            <div class="canvas-wrapper">
+                <canvas id="mule-graph-canvas" width="900" height="520"></canvas>
+                <div class="graph-legend">
+                    <div class="legend-item"><span class="legend-dot red"></span> Scammer Hub</div>
+                    <div class="legend-item"><span class="legend-dot orange"></span> Mule Account</div>
+                    <div class="legend-item"><span class="legend-dot purple"></span> Cashout Off-ramp</div>
+                    <div class="legend-item"><span class="legend-dot green"></span> Verified Merchant</div>
+                    <div class="legend-item"><span class="legend-dot blue"></span> Legitimate User</div>
+                </div>
+            </div>
+        </div>
+        <div class="node-inspector white-card" id="node-inspector">
+            <div class="panel-header">
+                <h3>Node Inspector</h3>
+                <p class="panel-desc">Click any node to inspect graph metrics, account age, and device fingerprint</p>
+            </div>
+            <div id="inspector-content">
+                <div class="empty-inspector">
+                    <span>👆</span>
+                    <p>Click any node to inspect its mule ring metrics and risk telemetry.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     TAB 3: NATIONAL THREAT REGISTRY
+     — Interactive metric widgets, real data —
+═════════════════════════════════════════════ -->
+<section id="tab-threat" class="tab-panel">
+    <div class="threat-layout">
+
+        <!-- Interactive Metrics Grid -->
+        <div class="metrics-grid">
+
+            <!-- Latency — Live sparkline -->
+            <div class="metric-card white-card metric-latency-card">
+                <div class="metric-live-dot"></div>
+                <div class="metric-header">Avg Interception Latency</div>
+                <div class="metric-big-val blue" id="stat-latency">36.4 ms</div>
+                <canvas id="sparkline-latency" class="metric-sparkline" width="140" height="32"></canvas>
+                <div class="metric-sub" id="latency-status-label">Updates every 10s</div>
+            </div>
+
+            <!-- Accuracy — Gauge ring -->
+            <div class="metric-card white-card metric-accuracy-card">
+                <div class="metric-header">Detection Accuracy</div>
+                <div class="metric-gauge-wrap">
+                    <svg class="metric-gauge" viewBox="0 0 80 80">
+                        <circle class="gauge-bg" cx="40" cy="40" r="30" fill="none" stroke-width="8"/>
+                        <circle class="gauge-fill green" id="gauge-accuracy" cx="40" cy="40" r="30"
+                            fill="none" stroke-width="8"
+                            stroke-dasharray="188.5"
+                            stroke-dashoffset="15"
+                            stroke-linecap="round"
+                            transform="rotate(-90 40 40)"/>
+                    </svg>
+                    <div class="gauge-center-label" id="stat-accuracy">99.2%</div>
+                </div>
+                <div class="metric-sub">Multi-model contextual fusion</div>
+            </div>
+
+            <!-- False Positive — Shrinking bar -->
+            <div class="metric-card white-card metric-fp-card">
+                <div class="metric-header">False Positive Rate</div>
+                <div class="metric-big-val emerald" id="stat-fpr">0.74%</div>
+                <div class="fpr-bar-track">
+                    <div class="fpr-bar-fill" id="bar-fpr" style="width:14.8%"></div>
+                </div>
+                <div class="metric-sub" id="fpr-label">✓ Below 1% threshold — baseline suppression active</div>
+            </div>
+
+            <!-- Zero-Day — Animated counter -->
+            <div class="metric-card white-card metric-zeroday-card">
+                <div class="metric-header">Zero-Day Accounts Flagged</div>
+                <div class="metric-big-val orange" id="stat-zero-days">0</div>
+                <div class="zeroday-bar-track">
+                    <div class="zeroday-bar-fill" id="bar-zeroday" style="width:0%"></div>
+                </div>
+                <div class="metric-sub">Graph-based proactive detection — live session</div>
+            </div>
+
+        </div>
+
+        <!-- Audit Feed + Blacklist -->
+        <div class="threat-two-col">
+            <div class="audit-feed-panel white-card">
+                <div class="panel-header flex-between">
+                    <div>
+                        <h3>📜 Real-Time Interception Feed</h3>
+                        <p class="panel-desc">Continuous audit log with privacy-masked tokenized VPAs</p>
+                    </div>
+                    <button id="btn-refresh-feed" class="btn-sm">🔄 Refresh</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Txn ID</th>
+                                <th>Time</th>
+                                <th>Recipient (Masked)</th>
+                                <th>Amount</th>
+                                <th>Risk</th>
+                                <th>Latency</th>
+                                <th>Threat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="blacklist-tool-panel white-card">
+                <div class="panel-header">
+                    <h3>🚨 Report &amp; Blacklist</h3>
+                    <p class="panel-desc">Instantly add malicious UPI IDs to national threat cache</p>
+                </div>
+                <form id="report-vpa-form" class="report-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label for="input-report-vpa">Suspicious UPI ID</label>
+                        <input type="text" id="input-report-vpa" placeholder="e.g. scam-officer@ybl" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-report-reason">Threat Category</label>
+                        <select id="input-report-reason" class="custom-select">
+                            <option value="Digital Arrest Video Call Threat">Digital Arrest Video Call Threat</option>
+                            <option value="Fake Customer Care / AnyDesk Remote Access">Fake Customer Care / AnyDesk Remote Access</option>
+                            <option value="Telegram Investment Task Scam">Telegram Investment Task Scam</option>
+                            <option value="Reverse Collect Request Fraud">Reverse Collect Request Fraud</option>
+                            <option value="Electricity Disconnection Threat">Utility Disconnection Threat</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="btn-submit-report" class="btn-danger">🚨 Blacklist Globally</button>
+                </form>
+                <div class="active-blacklist-box">
+                    <div class="blacklist-box-header">Currently Blacklisted (High-Speed Cache):</div>
+                    <div class="blacklist-tags" id="blacklist-tags-list">
+                        <span class="bl-tag">cbi-investigation-cell@ybl</span>
+                        <span class="bl-tag">cashout_p2p_crypto@axl</span>
+                        <span class="bl-tag">sbi-customercare-support@ybl</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</main>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: PRE-PIN INTERCEPTION
+═════════════════════════════════════════════ -->
+<div id="prepin-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <span id="modal-risk-icon" class="modal-risk-icon">🚨</span>
+                <div>
+                    <div id="modal-risk-title" class="modal-risk-title">FRAUD INTERCEPTION ALERT</div>
+                    <div class="modal-latency-tag">RakshaPay Response: <strong id="modal-latency-val">34.2 ms</strong></div>
+                </div>
+            </div>
+            <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="token-alert-banner" id="modal-token-banner">
+                <div>
+                    <div class="token-banner-label">Recipient (Tokenized Handle):</div>
+                    <div id="modal-masked-vpa" class="token-banner-vpa">cbi-***-cell@ybl</div>
+                </div>
+                <div id="modal-security-badge" class="modal-sec-badge red">🚨 High-Risk Impersonation</div>
+            </div>
+            <div class="voice-alert-box">
+                <div class="voice-box-header">
+                    <div class="voice-box-title">🔊 Regional Voice Advisory</div>
+                    <div class="lang-selector">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="hi">हिंदी</button>
+                        <button class="lang-btn" data-lang="mr">मराठी</button>
+                        <button class="lang-btn" data-lang="ta">தமிழ்</button>
+                    </div>
+                </div>
+                <div class="voice-script-text" id="modal-voice-text">
+                    "Warning! Potential Digital Arrest scam detected. Police or CBI never demand money on video calls. Do not enter your UPI PIN!"
+                </div>
+                <div class="voice-actions">
+                    <button id="btn-play-voice" class="btn-voice-play">▶️ Play Warning</button>
+                    <div class="voice-waves" id="voice-waves">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+            <div class="xai-explanation-box">
+                <div class="xai-box-title">📊 Explainable AI — Why Was This Flagged?</div>
+                <div class="xai-factors-grid" id="modal-xai-factors"></div>
+                <div class="xai-evidence-list">
+                    <div class="evidence-title">Key Risk Indicators:</div>
+                    <ul id="modal-evidence-ul"></ul>
+                </div>
+                <div class="action-advisory-callout" id="modal-action-advisory">
+                    🚨 Legitimate police, CBI, or bank officials will NEVER ask you to make a UPI transfer under any circumstances.
+                </div>
+            </div>
+            <div id="step-up-challenge-box" class="step-up-box">
+                <div class="step-up-header">🛡️ Anti-Coercion Verification</div>
+                <div class="step-up-statement" id="modal-stepup-statement">
+                    Official Advisory: Government enforcement agencies (CBI, Police, ED) NEVER demand money transfers under Indian Law.
+                </div>
+                <div class="coercion-question-box">
+                    <label id="modal-coercion-q" class="coercion-label">Are you currently on a call with someone claiming to be Law Enforcement?</label>
+                    <div class="coercion-radio-group">
+                        <button type="button" class="btn-coerced yes" id="btn-coerced-yes">⚠️ YES — I am on a call</button>
+                        <button type="button" class="btn-coerced no" id="btn-coerced-no">NO — Paying voluntarily</button>
+                    </div>
+                </div>
+                <div class="captcha-row">
+                    <span class="math-q-label" id="modal-math-q">Type the verification code:</span>
+                    <input type="text" id="input-math-answer" placeholder="Answer" class="math-input">
+                </div>
+                <label class="checkbox-disclaimer">
+                    <input type="checkbox" id="chk-modal-disclaimer">
+                    <span id="modal-disclaimer-text">I understand police never request UPI payments and I am proceeding on my own accord.</span>
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-modal-cancel" class="btn-modal-cancel">⛔ Cancel Payment (Recommended)</button>
+            <button id="btn-modal-proceed-pin" class="btn-modal-proceed">Proceed to PIN ➔</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: UPI PIN PAD
+═════════════════════════════════════════════ -->
+<div id="pinpad-modal" class="modal-overlay hidden">
+    <div class="pinpad-card">
+        <div class="pinpad-bank-logo">🔐 UPI PIN Entry</div>
+        <div class="pinpad-payee" id="pin-payee-display">Gayatri ➔ cbi-***-cell@ybl</div>
+        <div class="pinpad-amount" id="pin-amount-display">₹48,500.00</div>
+        <div class="pin-dots-container">
+            <span class="pin-dot" id="dot-1"></span>
+            <span class="pin-dot" id="dot-2"></span>
+            <span class="pin-dot" id="dot-3"></span>
+            <span class="pin-dot" id="dot-4"></span>
+        </div>
+        <div class="pin-keypad">
+            <button class="keypad-btn" data-key="1">1</button>
+            <button class="keypad-btn" data-key="2">2</button>
+            <button class="keypad-btn" data-key="3">3</button>
+            <button class="keypad-btn" data-key="4">4</button>
+            <button class="keypad-btn" data-key="5">5</button>
+            <button class="keypad-btn" data-key="6">6</button>
+            <button class="keypad-btn" data-key="7">7</button>
+            <button class="keypad-btn" data-key="8">8</button>
+            <button class="keypad-btn" data-key="9">9</button>
+            <button class="keypad-btn special" id="btn-keypad-clear">Clear</button>
+            <button class="keypad-btn" data-key="0">0</button>
+            <button class="keypad-btn submit" id="btn-keypad-submit">✓</button>
+        </div>
+        <button id="btn-pinpad-cancel" class="btn-link-cancel">Cancel Transaction</button>
+    </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: BLOCKED
+═════════════════════════════════════════════ -->
+<div id="blocked-modal" class="modal-overlay hidden">
+    <div class="blocked-card">
+        <div class="blocked-icon">🛑</div>
+        <h3>TRANSACTION BLOCKED FOR YOUR SAFETY</h3>
+        <p id="blocked-message">
+            You indicated you are on a call with alleged law enforcement. Disconnect immediately.
+            Under Indian law, Police, CBI, and Judiciary NEVER demand UPI payments during investigations.
+        </p>
+        <div class="helpline-card">
+            <div class="helpline-num">📞 National Cyber Crime Helpline: 1930</div>
+            <div class="helpline-portal">Online Reporting: cybercrime.gov.in</div>
+        </div>
+        <button id="btn-blocked-dismiss" class="btn-primary-pay">I Understand — I Have Disconnected the Call</button>
+    </div>
+</div>
+
+<script src="/static/graph_visualizer.js"></script>
+<script src="/static/app.js"></script>
+
+<!-- ══ AI Fraud Advisor Chat Widget ══ -->
+<style>
+#ai-chat-fab{position:fixed;bottom:28px;right:28px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#8458B3,#A0D2EB);border:none;cursor:pointer;box-shadow:0 4px 20px rgba(132,88,179,.45);display:flex;align-items:center;justify-content:center;font-size:26px;z-index:9000;transition:transform .2s,box-shadow .2s}
+#ai-chat-fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(132,88,179,.6)}
+#ai-chat-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ef4444;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:800;border:2px solid #fff}
+#ai-chat-panel{position:fixed;bottom:96px;right:28px;width:360px;max-height:520px;background:#fff;border-radius:20px;box-shadow:0 12px 48px rgba(132,88,179,.25);display:flex;flex-direction:column;z-index:9001;transform:scale(0.85) translateY(20px);opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.34,1.56,.64,1);overflow:hidden}
+#ai-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.ai-panel-header{background:linear-gradient(135deg,#8458B3,#6d3fa0);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.ai-panel-icon{font-size:22px}
+.ai-panel-titles{flex:1}
+.ai-panel-title{font-size:14px;font-weight:800;color:#fff}
+.ai-panel-sub{font-size:11px;color:rgba(255,255,255,.75);margin-top:1px}
+#ai-chat-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+#ai-chat-close:hover{background:rgba(255,255,255,.35)}
+.ai-suggest-row{display:flex;gap:6px;padding:10px 12px 0;flex-wrap:wrap}
+.ai-suggest-chip{padding:5px 10px;background:#f3f0ff;border:1.5px solid #D0BDF4;border-radius:20px;font-size:11px;color:#8458B3;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+.ai-suggest-chip:hover{background:#8458B3;color:#fff;border-color:#8458B3}
+#ai-chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:310px}
+.ai-msg{display:flex}
+.ai-msg-user{justify-content:flex-end}
+.ai-msg-bot{justify-content:flex-start}
+.ai-msg-bubble{max-width:82%;padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.5}
+.ai-msg-user .ai-msg-bubble{background:#8458B3;color:#fff;border-bottom-right-radius:4px}
+.ai-msg-bot .ai-msg-bubble{background:#f3f0ff;color:#494D5F;border-bottom-left-radius:4px;border:1px solid #e8e1ff}
+.ai-typing{display:inline-flex;align-items:center;gap:4px;padding:10px 14px;background:#f3f0ff;border-radius:16px;border-bottom-left-radius:4px}
+.ai-typing span{width:7px;height:7px;border-radius:50%;background:#8458B3;animation:aiDot 1.2s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes aiDot{0%,80%,100%{transform:scale(0.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.ai-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #f0f0f0}
+#ai-chat-input{flex:1;padding:9px 12px;border:1.5px solid #D0BDF4;border-radius:10px;font-size:13px;font-family:inherit;outline:none;background:#f9f7ff;color:#494D5F;transition:border-color .2s}
+#ai-chat-input:focus{border-color:#8458B3;background:#fff}
+#ai-chat-send{padding:9px 16px;background:#8458B3;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+#ai-chat-send:hover{background:#6d3fa0}
+</style>
+
+<!-- FAB button -->
+<button id="ai-chat-fab" title="AI Fraud Advisor">
+  🤖
+  <div id="ai-chat-badge"></div>
+</button>
+
+<!-- Chat Panel -->
+<div id="ai-chat-panel">
+  <div class="ai-panel-header">
+    <div class="ai-panel-icon">🤖</div>
+    <div class="ai-panel-titles">
+      <div class="ai-panel-title">AI Fraud Advisor</div>
+      <div class="ai-panel-sub">Powered by Gemini 1.5 Flash</div>
+    </div>
+    <button id="ai-chat-close" title="Close">✕</button>
+  </div>
+  <div class="ai-suggest-row">
+    <button class="ai-suggest-chip">What is VPA spoofing?</button>
+    <button class="ai-suggest-chip">How to spot KYC scams?</button>
+    <button class="ai-suggest-chip">Explain my risk score</button>
+    <button class="ai-suggest-chip">What are mule accounts?</button>
+  </div>
+  <div id="ai-chat-messages"></div>
+  <div class="ai-input-row">
+    <input id="ai-chat-input" type="text" placeholder="Ask about fraud, risk scores…">
+    <button id="ai-chat-send">Send</button>
+  </div>
+</div>
+
+<script src="/static/ai_chat.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RakshaPay — Secure Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #8458B3;
+      --pale-blue: #E5EAF5;
+      --sky-blue: #A0D2EB;
+      --lavender: #D0BDF4;
+      --slate: #494D5F;
+      --white: #ffffff;
+      --error: #e53935;
+      --success: #2e7d32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #E5EAF5 0%, #D0BDF4 45%, #A0D2EB 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .brand-icon {
+      font-size: 52px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 12px rgba(132, 88, 179, 0.25));
+    }
+    .brand-name {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--slate);
+      letter-spacing: -0.5px;
+    }
+    .brand-name span { color: var(--purple); }
+    .brand-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 45px rgba(132, 88, 179, 0.18);
+      padding: 38px 34px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .tabs {
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--lavender);
+      margin-bottom: 26px;
+    }
+    .tab {
+      flex: 1;
+      padding: 11px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: #f8f6ff;
+      color: var(--slate);
+      font-family: inherit;
+    }
+    .tab.active {
+      background: var(--purple);
+      color: #ffffff;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--slate);
+      margin-bottom: 4px;
+    }
+    .form-sub {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 20px;
+    }
+    .input-group { margin-bottom: 16px; }
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--lavender);
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #f9f7ff;
+      color: var(--slate);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus {
+      border-color: var(--purple);
+      background: #ffffff;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: var(--purple);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-top: 4px;
+    }
+    .btn-primary:hover {
+      background: #6d3fa0;
+      transform: translateY(-1px);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+    }
+    .divider hr {
+      flex: 1;
+      border: none;
+      border-top: 1px solid #e5e7eb;
+    }
+    .divider span {
+      font-size: 12px;
+      color: #9ca3af;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .btn-google {
+      width: 100%;
+      padding: 11px;
+      background: #ffffff;
+      color: #374151;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-google:hover {
+      border-color: var(--purple);
+      background: #f9f7ff;
+    }
+    .msg-error, .msg-success {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .msg-error {
+      background: #fff0f0;
+      color: var(--error);
+      border: 1px solid #fca5a5;
+    }
+    .msg-success {
+      background: #f0fdf4;
+      color: var(--success);
+      border: 1px solid #86efac;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .switch-link a {
+      color: var(--purple);
+      text-decoration: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Google Modal Overlay */
+    .g-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    .g-overlay.open { display: flex; }
+    .g-modal {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 38px 34px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.22);
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .g-header { text-align: center; margin-bottom: 20px; }
+    .g-header-icon { font-size: 30px; margin-bottom: 6px; }
+    .g-header-title { font-size: 22px; font-weight: 800; color: var(--slate); }
+    .g-header-sub { font-size: 13px; color: #6b7280; margin-top: 3px; }
+    .g-step { display: none; }
+    .g-step.active { display: block; }
+    .g-tile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 15px;
+      border: 1.5px solid var(--lavender);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+    .g-tile:hover {
+      border-color: var(--purple);
+      background: #f9f7ff;
+    }
+    .g-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--sky-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .g-info { flex: 1; min-width: 0; }
+    .g-name { font-size: 14px; font-weight: 600; color: var(--slate); }
+    .g-email { font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .g-other {
+      width: 100%;
+      padding: 10px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .g-other:hover { background: #e5e7eb; }
+    .g-btns { display: flex; gap: 10px; margin-top: 18px; }
+    .g-cancel, .g-continue {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      transition: all 0.2s;
+    }
+    .g-cancel { background: #f3f4f6; color: #374151; }
+    .g-cancel:hover { background: #e5e7eb; }
+    .g-continue { background: var(--purple); color: #ffffff; }
+    .g-continue:hover { background: #6d3fa0; }
+    .g-continue:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(229, 234, 245, 0.94);
+      backdrop-filter: blur(8px);
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #D0BDF4;
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-size: 18px; font-weight: 700; color: var(--slate); }
+    .loading-sub { font-size: 13px; color: #9ca3af; }
+
+    /* Badges */
+    .badges {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #6b7280;
+      background: rgba(132, 88, 179, 0.08);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .footer-tag {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+<div class="brand">
+  <div class="brand-icon">🛡️</div>
+  <div class="brand-name">Raksha<span>Pay</span></div>
+  <div class="brand-sub">AI-Powered UPI Fraud Interception Gateway — SIH 2026</div>
+</div>
+
+<div class="card">
+  <div class="tabs">
+    <button class="tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <!-- LOGIN PANEL -->
+  <div class="panel active" id="panel-login">
+    <div class="form-title">Welcome back</div>
+    <div class="form-sub">Sign in to your RakshaPay account</div>
+
+    <button class="btn-google" onclick="openGoogleModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Sign in with Google
+    </button>
+
+    <div class="divider"><hr><span>or continue with email</span><hr></div>
+
+    <div id="login-error" class="msg-error"></div>
+
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="btn-login" onclick="doLogin()">Sign In</button>
+    <div class="switch-link">Don't have an account? <a onclick="switchTab('signup')">Sign up</a></div>
+  </div>
+
+  <!-- SIGNUP PANEL -->
+  <div class="panel" id="panel-signup">
+    <div class="form-title">Create your account</div>
+    <div class="form-sub">Join RakshaPay and protect your UPI transactions</div>
+
+    <button class="btn-google" onclick="openGoogleModal()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Sign up with Google
+    </button>
+
+    <div class="divider"><hr><span>or register with email</span><hr></div>
+
+    <div id="signup-error" class="msg-error"></div>
+    <div id="signup-success" class="msg-success"></div>
+
+    <div class="input-group">
+      <label>Full Name</label>
+      <input type="text" id="signup-name" placeholder="Your full name">
+    </div>
+    <div class="input-group">
+      <label>Email Address</label>
+      <input type="email" id="signup-email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label>Password (min 6 chars)</label>
+      <input type="password" id="signup-password" placeholder="Create a strong password" autocomplete="new-password">
+    </div>
+    <button class="btn-primary" id="btn-signup" onclick="doSignup()">Create Account</button>
+    <div class="switch-link">Already have an account? <a onclick="switchTab('login')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- Badges -->
+<div class="badges">
+  <div class="badge">🔒 Zero Trust Auth</div>
+  <div class="badge">🤖 Gemini AI</div>
+  <div class="badge">🛡️ RBI Advisory Compliant</div>
+  <div class="badge">⚡ Sub-50ms Detection</div>
+</div>
+<div class="footer-tag">Team ByteShield — Smart India Hackathon 2026</div>
+
+<!-- Google Sign-In Simulated Modal -->
+<div class="g-overlay" id="google-modal-overlay">
+  <div class="g-modal">
+    <div class="g-header">
+      <div class="g-header-icon">🔵</div>
+      <div class="g-header-title">Sign in with Google</div>
+      <div class="g-header-sub">Choose an account to continue to RakshaPay</div>
+    </div>
+
+    <!-- Step 1: Account Chooser -->
+    <div class="g-step active" id="g-step-1">
+      <div class="g-tile" onclick="selectSavedAccount('gayatri@gmail.com', 'Gayatri')">
+        <div class="g-avatar">G</div>
+        <div class="g-info">
+          <div class="g-name">Gayatri</div>
+          <div class="g-email">gayatri@gmail.com</div>
+        </div>
+        <span style="color:var(--purple);font-size:20px;">›</span>
+      </div>
+      <button class="g-other" onclick="goToStep2()">Use another account</button>
+      <div class="g-btns">
+        <button class="g-cancel" onclick="closeGoogleModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Custom Email Input -->
+    <div class="g-step" id="g-step-2">
+      <div class="input-group">
+        <label>Google Email Address</label>
+        <input type="email" id="g-email-input" placeholder="Enter your Google email" autocomplete="email">
+      </div>
+      <div id="g-email-error" class="msg-error"></div>
+      <div class="g-btns">
+        <button class="g-cancel" onclick="goToStep1()">Back</button>
+        <button class="g-continue" onclick="proceedGoogleSignin()">Continue</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirm Account -->
+    <div class="g-step" id="g-step-3">
+      <div class="g-tile" style="cursor:default;border-color:var(--purple);">
+        <div class="g-avatar" id="g-confirm-avatar">?</div>
+        <div class="g-info">
+          <div class="g-name" id="g-confirm-name">—</div>
+          <div class="g-email" id="g-confirm-email">—</div>
+        </div>
+        <span style="color:var(--success);font-size:20px;">✓</span>
+      </div>
+      <p style="font-size:13px;color:#6b7280;text-align:center;margin-bottom:8px">Continue to RakshaPay as this account?</p>
+      <div class="g-btns">
+        <button class="g-cancel" onclick="goToStep1()">Back</button>
+        <button class="g-continue" id="g-confirm-btn" onclick="confirmGoogleSignin()">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-title" id="loading-title">Signing you in…</div>
+  <div class="loading-sub" id="loading-sub">Securing session with Zero Trust tokens</div>
+</div>
+
+<script>
+let googleEmail = '', googleName = '';
+
+// Tab switching
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) =>
+    t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'signup' && i === 1))
+  );
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// Google Sign-in Modal
+function openGoogleModal() {
+  document.getElementById('google-modal-overlay').classList.add('open');
+  goToStep1();
+}
+
+function closeGoogleModal() {
+  document.getElementById('google-modal-overlay').classList.remove('open');
+}
+
+function goToStep1() {
+  document.querySelectorAll('.g-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('g-step-1').classList.add('active');
+}
+
+function goToStep2() {
+  document.querySelectorAll('.g-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('g-step-2').classList.add('active');
+  setTimeout(() => document.getElementById('g-email-input')?.focus(), 100);
+}
+
+function selectSavedAccount(email, name) {
+  googleEmail = email;
+  googleName = name;
+  showStep3(email, name);
+}
+
+function showStep3(email, name) {
+  document.querySelectorAll('.g-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('g-step-3').classList.add('active');
+  document.getElementById('g-confirm-email').textContent = email;
+  document.getElementById('g-confirm-name').textContent = name;
+  document.getElementById('g-confirm-avatar').textContent = name ? name[0].toUpperCase() : 'U';
+}
+
+function proceedGoogleSignin() {
+  const email = document.getElementById('g-email-input').value.trim();
+  const errEl = document.getElementById('g-email-error');
+  errEl.style.display = 'none';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    return;
+  }
+  googleEmail = email;
+  const parts = email.split('@')[0].replace(/[._-]/g, ' ').split(' ');
+  googleName = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  showStep3(email, googleName);
+}
+
+async function confirmGoogleSignin() {
+  closeGoogleModal();
+  showLoading('Welcome, ' + googleName + '!', 'Securing your session with Zero Trust…');
+  try {
+    const res = await fetch('/auth/google-signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: googleEmail, name: googleName })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Sign-in failed');
+    storeTokenAndRedirect(data);
+  } catch (e) {
+    hideLoading();
+    showError('login-error', e.message || 'Google sign-in failed. Please try again.');
+  }
+}
+
+// Normal Email Login
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('btn-login');
+  hideMsg('login-error');
+
+  if (!email || !password) {
+    showError('login-error', 'Please fill in all fields.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  try {
+    const res = await fetch('/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Login failed');
+    showLoading('Welcome back, ' + data.user_name + '!', 'Loading your dashboard…');
+    storeTokenAndRedirect(data);
+  } catch (e) {
+    showError('login-error', e.message);
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+// Normal Email Signup
+async function doSignup() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const btn = document.getElementById('btn-signup');
+  hideMsg('signup-error');
+  hideMsg('signup-success');
+
+  if (!name || !email || !password) {
+    showError('signup-error', 'Please fill in all fields.');
+    return;
+  }
+  if (password.length < 6) {
+    showError('signup-error', 'Password must be at least 6 characters.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const res = await fetch('/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Sign up failed');
+    showLoading('Account created! Welcome, ' + data.user_name + '!', 'Setting up your dashboard…');
+    storeTokenAndRedirect(data);
+  } catch (e) {
+    showError('signup-error', e.message);
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+}
+
+// Token Storage and Redirect
+function storeTokenAndRedirect(data) {
+  localStorage.setItem('rp_token', data.access_token);
+  localStorage.setItem('rp_user_name', data.user_name);
+  localStorage.setItem('rp_user_email', data.user_email);
+  setTimeout(() => {
+    window.location.href = '/dashboard';
+  }, 1500);
+}
+
+function showLoading(title, sub) {
+  document.getElementById('loading-title').textContent = title;
+  document.getElementById('loading-sub').textContent = sub;
+  document.getElementById('loading-overlay').classList.add('show');
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.remove('show');
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+}
+
+function hideMsg(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+// Auto-redirect handling for active sessions
+(function checkExistingSession() {
+  const isSignup = window.location.pathname.includes('/signup') || 
+                   window.location.hash.toLowerCase().includes('signup') || 
+                   window.location.search.toLowerCase().includes('signup');
+  const isLogout = window.location.pathname.includes('/logout') || 
+                   window.location.search.toLowerCase().includes('logout');
+
+  if (isLogout || isSignup) {
+    // Force clear session token so signup / logout works unconditionally without redirecting back to dashboard
+    localStorage.removeItem('rp_token');
+    localStorage.removeItem('rp_user_name');
+    localStorage.removeItem('rp_user_email');
+    return;
+  }
+
+  const token = localStorage.getItem('rp_token');
+  if (token) {
+    fetch('/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(res => {
+        if (res.ok) window.location.href = '/dashboard';
+      })
+      .catch(() => {});
+  }
+})();
+
+// Keyboard Enter shortcuts & URL check
+document.addEventListener('DOMContentLoaded', () => {
+  const isSignup = window.location.pathname.includes('/signup') || 
+                   window.location.hash.toLowerCase().includes('signup') || 
+                   window.location.search.toLowerCase().includes('signup');
+  if (isSignup) {
+    switchTab('signup');
+  }
+  document.getElementById('login-password')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+  document.getElementById('signup-password')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSignup();
+  });
+  document.getElementById('g-email-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') proceedGoogleSignin();
+  });
+});
+</script>
+</body>
+</html>
